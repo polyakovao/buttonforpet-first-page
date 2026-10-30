@@ -10,6 +10,7 @@ export interface PetButton {
   elapsedMinutes: number
   status: ButtonStatus
   channels: NotificationChannel[]
+  historyId?: string
 }
 
 export interface HistoryEntry {
@@ -30,6 +31,7 @@ export const petButtons: PetButton[] = [
     elapsedMinutes: 12,
     status: "pending",
     channels: ["telegram", "push"],
+    historyId: "4",
   },
   {
     id: "bowl",

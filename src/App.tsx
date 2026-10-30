@@ -2,7 +2,10 @@ import { useState } from "react"
 
 import { PetButtonCard } from "@/components/pet-button-card"
 import { PressHistory } from "@/components/press-history"
-import { petButtons as initialButtons, todayHistory } from "@/data/pet-buttons"
+import {
+  petButtons as initialButtons,
+  todayHistory as initialHistory,
+} from "@/data/pet-buttons"
 import type { PetButton } from "@/data/pet-buttons"
 
 function byPendingFirst(buttons: PetButton[]) {
@@ -11,13 +14,31 @@ function byPendingFirst(buttons: PetButton[]) {
 
 export function App() {
   const [buttons, setButtons] = useState<PetButton[]>(initialButtons)
+  const [history, setHistory] = useState(initialHistory)
 
   function handleAcknowledge(id: string) {
+    const button = buttons.find((b) => b.id === id)
+
     setButtons((prev) =>
       prev.map((button) =>
         button.id === id ? { ...button, status: "acknowledged" } : button
       )
     )
+
+    if (button?.historyId) {
+      setHistory((prev) =>
+        prev.map((entry) =>
+          entry.id === button.historyId
+            ? {
+                ...entry,
+                acknowledged: true,
+                acknowledgedBy: "Вы",
+                acknowledgedAfterMinutes: button.elapsedMinutes,
+              }
+            : entry
+        )
+      )
+    }
   }
 
   return (
@@ -40,7 +61,7 @@ export function App() {
           ))}
         </div>
 
-        <PressHistory entries={todayHistory} />
+        <PressHistory entries={history} />
       </div>
     </div>
   )
